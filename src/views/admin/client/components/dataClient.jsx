@@ -4,10 +4,9 @@ import axios from "axios";
 import PopupEdit from "views/admin/editProduct/components/popup";
 
 
-const Data = (props)=>{
+const DataClient = (props)=>{
     const {data} = props
     const navigate = useNavigate();
-    const [open, setOpen] = React.useState(false);
     const [openadd, setOpenadd] = React.useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
   
@@ -44,7 +43,7 @@ const Data = (props)=>{
         <>
             {data.map((barang, index) => (
                 <tr
-                  key={barang._id}
+                key={barang._id}
                   className={`${index % 2 === 0 ? "dark" : "light"}:bg-white hover:bg-gray-200  dark:${
                     index % 2 === 0 ? "odd" : "even"
                   }:bg-gray-800 dark:hover:bg-gray-700 `}
@@ -75,10 +74,10 @@ const Data = (props)=>{
                     </button>
                   </td>
                   <td className="text-sm font-bold text-navy-700 dark:text-white">
-                    {barang.fname}
+                    {barang.nama}
                   </td>
                   <td className="text-sm font-bold text-navy-700 dark:text-white">
-                    {rupiah(barang.harga)}
+                    {barang.email}
                   </td>
                   <td className="text-sm font-bold text-navy-700 dark:text-white">
                     {barang.kategori}
@@ -97,4 +96,4 @@ const Data = (props)=>{
     )
 }
 
-export default Data;
+export default DataClient;

@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
 import SearchBar from "components/searchbar";
-import Data from "./dataTabel"
+import DataClient from "./dataClient";
 
-const Products = ( ) => {
+const Client = ( ) => {
   const [data, setData] = useState([]);
   const [record,setRecords] = useState([])
   
-  const menuBarang = [...new Set(data.map((p)=>p.kategori))]
-
-  const filterKategori = (kat) =>{
-    const newKategori = data.filter((newKat)=> newKat.kategori === kat)
-    setRecords(newKategori)
-  }
 
   const filter = (e)=>{
         setRecords(data.filter(f=>f.fname.toLowerCase().includes(e.target.value)))
@@ -24,7 +16,7 @@ const Products = ( ) => {
 
   const getUserData = async () => {
     try {
-      const res = await axios.get("https://mauliya-bakeryserve.vercel.app/getdata", {
+      const res = await axios.get("https://mauliya-bakeryserve.vercel.app/user", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -33,8 +25,8 @@ const Products = ( ) => {
       if (res.data.status === 401 || !res.data) {
         console.log("error");
       } else {
-        setData(res.data.getBarang);
-        setRecords(res.data.getBarang)
+        setData(res.data);
+        setRecords(res.data)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -61,7 +53,6 @@ const Products = ( ) => {
           <div className="text-xl font-bold text-navy-700 dark:text-white">
             Development Table
           </div>
-          <CardMenu menuItems={menuBarang}  kategori={filterKategori} setKat={()=>setRecords(data)}/>
         </div>
         <SearchBar setSearch={filter}/>
         <div className="h-full w-full overflow-x-scroll xl: xl:overflow-x-hidden">
@@ -92,7 +83,7 @@ const Products = ( ) => {
               </tr>
             </thead>
             <tbody>
-              <Data data={record}/>
+              <DataClient data={record}/>
             </tbody>
           </table>
         </div>
@@ -101,4 +92,4 @@ const Products = ( ) => {
   );
 };
 
-export default Products;
+export default Client;

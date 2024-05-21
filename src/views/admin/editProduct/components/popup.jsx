@@ -1,9 +1,10 @@
-import React from "react";
-import NewProduct from "..";
+import React, { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import EditProduct from "..";
 
-export default function Modal(props) {
-    const {setclose} = props
+export default function PopupEdit(props) {
+    const {closePopup,productData} = props
+    const [getid,setgetid] = useState(productData)
 
   return (
  
@@ -17,11 +18,11 @@ export default function Modal(props) {
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                   <h3 className="font-sans text-3xl font-bold">
-                    Tambah Produk
+                    Edit Produk/{getid}
                   </h3>
                   <button
                     className="p-1 ml-auto bg-transparent border-0 text-shadow-500 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={setclose}
+                    onClick={closePopup}
                   >
                     <span className="bg-transparent text-shadow-500 h-6 w-6 text-2xl block outline-none focus:outline-none">
                     <IoClose />
@@ -30,7 +31,7 @@ export default function Modal(props) {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto overflow-y-hidden">
-                  <NewProduct closeTab={setclose}/>
+                  <EditProduct closeTab={closePopup} idProduct={getid}/>
                 </div>
               </div>
             </div>

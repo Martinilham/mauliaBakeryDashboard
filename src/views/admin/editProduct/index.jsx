@@ -1,22 +1,42 @@
-import React, { useState } from "react";
-import "./step.css";
+import React, { useState ,useEffect } from "react";
 import { TiTick } from "react-icons/ti";
-import InputField from "components/fields/InputField";
-import axios from "axios"
+import axios from "axios";
+import "./step.css";
 
-export default function NewProduct(props) {
-  const {closeTab} = props
-  const [produk, setproduk] = useState("");
-  const [deskripsi, setdeskripsi] = useState("");
-  const [kategori, setkategori] = useState("");
-  const [jumlah, setjumlah] = useState(0);
-  const [harga, setharga] = useState(0);
+export default function EditProduct(props) {
+  const { closeTab, idProduct } = props
+  const [fname, setproduk] = useState(""); 
+  const [deskripsi, setdeskripsi] = useState(""); 
+  const [kategori, setkategori] = useState(""); 
+  const [jumlah, setjumlah] = useState(0); 
+  const [harga, setharga] = useState(0); 
   const [discount, setdiscount] = useState(0);
   const [gambar, setGambar] = useState("");
   const steps = ["Info Barang", "Media", "Harga", "Konfirmasi"];
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
   const [file, setFile] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`https://mauliya-bakeryserve.vercel.app/getdata/${idProduct}`);
+        const data = response.data;
+        setproduk(data.fname);
+        setdeskripsi(data.deskripsi);
+        setkategori(data.kategori);
+        setjumlah(data.jumlah);
+        setharga(data.harga);
+        setdiscount(data.discount);
+        setGambar(data.photo);
+      } catch (error) {
+        console.error("Failed to fetch product data:", error.message);
+      }
+    };
+
+    fetchData();
+  }, [idProduct]);
+
 
   function handleChange(e) {
     setGambar(e.target.files[0]);
@@ -28,38 +48,32 @@ export default function NewProduct(props) {
       setCurrentStep((prev) => prev - 1);
     }
   };
-  
 
   const handleNextOrFinish = async (e) => {
     if (currentStep === steps.length) {
       e.preventDefault();
-    
-        var formData = new FormData();
-        formData.append("fname", produk);
-        formData.append("deskripsi", deskripsi);
-        formData.append("kategori", kategori);
-        formData.append("jumlah", jumlah);
-        formData.append("harga", harga);
-        formData.append("discount", discount);
-        formData.append("photo", gambar);
-    
+
+      var formData = new FormData();
+      formData.append("fname", fname);
+      formData.append("deskripsi", deskripsi);
+      formData.append("kategori", kategori);
+      formData.append("jumlah", jumlah);
+      formData.append("harga", harga);
+      formData.append("discount", discount);
+      formData.append("photo", gambar);
+
       try {
-        
-        const response = await axios.post("https://mauliya-bakeryserve.vercel.app/register", formData, {
-          method: "POST",
+        const response = await axios.put(`https://mauliya-bakeryserve.vercel.app/getdata/${idProduct}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
-          
         });
-        if (response.status == 201) {
+        if (response.status === 200) {
           setComplete(true);
-        }else {
-          
-          console.error("Failed to post data:", response.statusText);
+        } else {
+          console.error("Failed to update product:", response.statusText);
         }
       } catch (error) {
-        
         console.error("Network error:", error.message);
       }
     } else {
@@ -88,57 +102,57 @@ export default function NewProduct(props) {
       {/* Text input field */}
       {currentStep === 1 && (
         <div className="mx-auto mt-2 w-full">
-        <label
-          className="ml-3 mb-2 block font-sans font-bold text-gray-700"
-          htmlFor="text"
-        >
-          Nama Barang
-        </label>
-        <input
-          className="focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-          id="produk"
-          type="text"
-          placeholder="contoh: Kue Salju"
-          autoComplete="off"
-          value={produk}
-          onChange={(e) => setproduk(e.target.value)}
-        ></input>
+          <label
+            className="ml-3 mb-2 block font-sans font-bold text-gray-700"
+            htmlFor="produk"
+          >
+            Nama Barang
+          </label>
+          <input
+            className="focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
+            id="produk"
+            type="text"
       
-        <label 
-          className="mt-2 ml-3 mb-2 block font-sans font-bold text-gray-700"
-          htmlFor="jenis_kue">
-          Kategory
-        </label>
-        
-        <select
-          name="jenis_kue"
-          id="jenis_kue"
-          placeholder="Pilih Kategori"
-          className="font-sans focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-          autoComplete="off"
-          value={kategori}
-          onChange={(e) => setkategori(e.target.value)}
-        >
-          <option value="" disabled defaultValue>
-            pilih kategori
-          </option>
-          <option value="Kue Kering">Kue Kering</option>
-          <option value="Kue Basah">Kue Basah</option>
-        </select>
-      
-        <label
-          className="mt-5 ml-3 mb-2 block font-sans font-bold text-gray-700"
-          htmlFor="text"
-        >
-          Deskripsi
-        </label>
-        <textarea
-          className="mb-4 h-24 w-full resize-none rounded border border-gray-500 px-3 py-1 text-sm outline-none placeholder:text-sm"
-          placeholder="Tambahkan deskripsi"
-          value={deskripsi}
-          onChange={(e) => setdeskripsi(e.target.value)}
-        ></textarea>
-      </div>      
+            value={fname}
+            onChange={(e) => setproduk(e.target.value)}
+          />
+
+          <label
+            className="mt-2 ml-3 mb-2 block font-sans font-bold text-gray-700"
+            htmlFor="jenis_kue"
+          >
+            Kategori
+          </label>
+
+          <select
+            name="jenis_kue"
+            id="jenis_kue"
+            placeholder="Pilih Kategori"
+            className="font-sans focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
+            autoComplete="off"
+            value={kategori}
+            onChange={(e) => setkategori(e.target.value)}
+          >
+            <option value="" disabled defaultValue>
+              pilih kategori
+            </option>
+            <option value="Kue Kering">Kue Kering</option>
+            <option value="Kue Basah">Kue Basah</option>
+          </select>
+
+          <label
+            className="mt-5 ml-3 mb-2 block font-sans font-bold text-gray-700"
+            htmlFor="deskripsi"
+          >
+            Deskripsi
+          </label>
+          <textarea
+            className="mb-4 h-24 w-full resize-none rounded border border-gray-500 px-3 py-1 text-sm outline-none placeholder:text-sm"
+            placeholder="Tambahkan deskripsi"
+            value={deskripsi}
+            onChange={(e) => setdeskripsi(e.target.value)}
+          ></textarea>
+        </div>
       )}
 
       {currentStep === 2 && (
@@ -186,48 +200,48 @@ export default function NewProduct(props) {
         <div className="mx-auto mt-7 w-full">
           <label
             className="ml-3 mb-2 block font-sans font-bold text-gray-700"
-            for="text"
+            htmlFor="jumlah"
           >
             Stok
           </label>
           <input
             className="focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-            id="email"
+            id="jumlah"
             type="text"
             placeholder="contoh: 20"
             value={jumlah}
             onChange={(e) => setjumlah(e.target.value)}
-          ></input>
+          />
 
           <label
             className="ml-3 mb-2 block font-sans font-bold text-gray-700"
-            for="text"
+            htmlFor="discount"
           >
             Diskon
           </label>
           <input
             className="focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-            id="text"
+            id="discount"
             type="text"
             placeholder="contoh: 10"
             value={discount}
             onChange={(e) => setdiscount(e.target.value)}
-          ></input>
+          />
 
           <label
             className="ml-3 mb-2 block font-sans font-bold text-gray-700"
-            for="text"
+            htmlFor="harga"
           >
             Harga
           </label>
           <input
-            className=" focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-            id="text"
+            className="focus:shadow-outline w-full appearance-none rounded border border-gray-500 py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
+            id="harga"
             type="text"
             placeholder="contoh: 10000"
             value={harga}
             onChange={(e) => setharga(e.target.value)}
-          ></input>
+          />
         </div>
       )}
       {currentStep === 4 && !complete && (
@@ -251,7 +265,7 @@ export default function NewProduct(props) {
               <p>:</p>
             </div>
             <div>
-              <h3>{produk}</h3>
+              <h3>{fname}</h3>
               <h3>{kategori}</h3>
               <h3>{deskripsi}</h3>
               <h3>{harga}</h3>
@@ -301,7 +315,7 @@ export default function NewProduct(props) {
             className="w-24 h-24 mx-auto"
           ></img>
           <p className="mt-4 font-medium text-green-500">
-            Success! Produk Berhasil Ditambahkan.
+            Success! Produk Berhasil Diubah.
           </p>
           <button
             className="mx-auto mt-4 linear rounded-[20px] bg-brand-900 px-4 py-2 text-base font-medium text-white transition duration-200 hover:bg-brand-800 active:bg-brand-700 dark:bg-brand-400 dark:hover:bg-brand-300 dark:active:opacity-90"

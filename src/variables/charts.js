@@ -1,3 +1,6 @@
+import axios from "axios";
+
+
 export const barChartDataDailyTraffic = [
   {
     name: "Daily Traffic",
@@ -255,6 +258,8 @@ export const barChartOptionsWeeklyRevenue = {
     },
   },
 };
+
+
 
 export const lineChartDataTotalSpent = [
   {
