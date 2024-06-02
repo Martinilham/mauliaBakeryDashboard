@@ -6,25 +6,18 @@ import Card from "components/card";
 import SearchBar from "components/searchbar";
 import Data from "./dataTabel"
 
-const Products = ( ) => {
+const TransaksiClients = ( ) => {
   const [data, setData] = useState([]);
   const [record,setRecords] = useState([])
-  
-  const menuBarang = [...new Set(data.map((p)=>p.kategori))]
-
-  const filterKategori = (kat) =>{
-    const newKategori = data.filter((newKat)=> newKat.kategori === kat)
-    setRecords(newKategori)
-  }
 
   const filter = (e)=>{
-        setRecords(data.filter(f=>f.fname.toLowerCase().includes(e.target.value)))
+        setRecords(data.filter(f=>f.namapemesan.toLowerCase().includes(e.target.value)))
   };
 
 
   const getUserData = async () => {
     try {
-      const res = await axios.get("/api/proxy/getdata", {
+      const res = await axios.get("https://mauliya-bakeryserve.vercel.app/pesanan", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -33,8 +26,8 @@ const Products = ( ) => {
       if (res.data.status === 401 || !res.data) {
         console.log("error");
       } else {
-        setData(res.data.getBarang);
-        setRecords(res.data.getBarang)
+        setData(res.data);
+        setRecords(res.data)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -61,7 +54,7 @@ const Products = ( ) => {
           <div className="text-xl font-bold text-navy-700 dark:text-white">
             Development Table
           </div>
-          <CardMenu menuItems={menuBarang}  kategori={filterKategori} setKat={()=>setRecords(data)}/>
+         
         </div>
         <SearchBar setSearch={filter}/>
         <div className="h-full w-full overflow-x-scroll xl: xl:overflow-x-hidden">
@@ -69,25 +62,28 @@ const Products = ( ) => {
             <thead>
               <tr>
                 <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
-                  Gambar
+                  tglOrder
                 </th>
                 <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
-                  Edit
-                </th>
-                <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
-                  Hapus
+                  Detail
                 </th>
                 <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
                   Nama
                 </th>
                 <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
-                  Harga
+                  Notelepon
                 </th>
                 <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
-                  Kategori
+                  Total
                 </th>
                 <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
-                  Stok
+                  Biaya
+                </th>
+                <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
+                  Status Pembayaran
+                </th>
+                <th className="border-b border-gray-200 pr-3 pb-[10px] text-start dark:!border-navy-700">
+                  Status Diterima
                 </th>
               </tr>
             </thead>
@@ -101,4 +97,4 @@ const Products = ( ) => {
   );
 };
 
-export default Products;
+export default TransaksiClients;
