@@ -1,6 +1,6 @@
 {
   "name": "horizon-ui-tailwind-react",
-  "proxy":"https://maulia-bakeryserver.vercel.app",
+  "proxy":"https://maulia-bakeryserver.vercel.app/",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
